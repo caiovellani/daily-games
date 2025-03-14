@@ -7,7 +7,8 @@ import Link from 'next/link'
 async function getDayleGame() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_API_UTL}/next-api/?api=game_day`
+      `${process.env.NEXT_API_UTL}/next-api/?api=game_day`,
+      { next: { revalidate: 320 } }
     )
     return res.json()
   } catch (err) {
