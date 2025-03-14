@@ -1,4 +1,5 @@
 import { Container } from '@/app/components/container'
+import { GameCard } from '@/app/components/gamecard'
 import { Input } from '@/app/components/input'
 import { GameProps } from '@/utils/types/game'
 import { CircleArrowRight } from 'lucide-react'
@@ -18,8 +19,21 @@ async function getDayleGame() {
   }
 }
 
+async function getGamesData() {
+  try {
+    const res = await fetch(`${process.env.NEXT_API_UTL}/next-api/?api=games`, {
+      next: { revalidate: 320 },
+    })
+    return res.json()
+  } catch (err) {
+    console.error(err)
+    throw new Error('Failed to fetch data')
+  }
+}
+
 export default async function Home() {
   const dalyGame: GameProps = await getDayleGame()
+  const data: GameProps[] = await getGamesData()
 
   return (
     <main className="w-full">
@@ -47,6 +61,13 @@ export default async function Home() {
           </section>
         </Link>
         <Input />
+
+        <h2 className="text-lg font-bold mt-8 mb-5">Jogos para conhecer</h2>
+        <section className="grid gap-7 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {data.map((item) => {
+            return <GameCard key={item.id} data={item} />
+          })}
+        </section>
       </Container>
     </main>
   )

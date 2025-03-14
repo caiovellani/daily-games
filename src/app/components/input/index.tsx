@@ -17,18 +17,18 @@ export function Input() {
 
   return (
     <form
-      className="w-full bg-slate-200 my-5 flex gap-2 items-center justify-between rounded-lg p-2"
+      className="w-full bg-slate-50 my-5 flex gap-2 items-center justify-between rounded-lg p-2"
       onSubmit={handleSearch}
     >
       <input
-        className="bg-slate-200 outline-none w-11/12"
+        className="bg-slate-50 outline-none w-11/12"
         type="text"
         placeholder="Procurando algum jogo?"
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
       <button type="submit">
-        <Search className="text-[#EA580C]" />
+        <Search className="text-slate-900" />
       </button>
     </form>
   )
