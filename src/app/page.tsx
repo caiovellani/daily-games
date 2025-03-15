@@ -9,7 +9,7 @@ import Link from 'next/link'
 async function getDayleGame() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_API_UTL}/next-api/?api=game_day`,
+      `${process.env.NEXT_API_URL}/next-api/?api=game_day`,
       { next: { revalidate: 320 } }
     )
     return res.json()
@@ -21,7 +21,7 @@ async function getDayleGame() {
 
 async function getGamesData() {
   try {
-    const res = await fetch(`${process.env.NEXT_API_UTL}/next-api/?api=games`, {
+    const res = await fetch(`${process.env.NEXT_API_URL}/next-api/?api=games`, {
       next: { revalidate: 320 },
     })
     return res.json()
