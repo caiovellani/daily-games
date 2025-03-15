@@ -1,4 +1,6 @@
 import { Container } from '@/app/components/container'
+import { GameCard } from '@/app/components/gamecard'
+import { Label } from '@/app/game/[id]/components/label'
 import type { GameProps } from '@/utils/types/game'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
@@ -6,7 +8,21 @@ import { redirect } from 'next/navigation'
 async function getData(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_API_URL}/next-api/?api=game&id=${id}`
+      `${process.env.NEXT_API_URL}/next-api/?api=game&id=${id}`,
+      { cache: 'no-store' }
+    )
+    return res.json()
+  } catch (err) {
+    console.error(err)
+    throw new Error('Failed to fetch data')
+  }
+}
+
+async function getSortedGame() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_API_URL}/next-api/?api=game_day`,
+      { cache: 'no-store' }
     )
     return res.json()
   } catch (err) {
@@ -21,6 +37,7 @@ export default async function GameDetails({
   params: { id: string }
 }) {
   const data: GameProps = await getData(id)
+  const sortedGame: GameProps = await getSortedGame()
 
   if (!data) {
     redirect('/')
@@ -42,6 +59,32 @@ export default async function GameDetails({
       <Container>
         <h1 className="font-bold text-xl my-4">{data.title}</h1>
         <p>{data.description}</p>
+
+        <h2 className="font-bold text-lg mt-7 mb-2">Categorias</h2>
+        <div className="flex gap-2 flex-wrap">
+          {data.categories.map((item, i) => {
+            return <Label key={i} name={item} />
+          })}
+        </div>
+
+        <h2 className="font-bold text-lg mt-7 mb-2">Plataformas</h2>
+        <div className="flex gap-2 flex-wrap">
+          {data.platforms.map((item, i) => {
+            return <Label key={i} name={item} />
+          })}
+        </div>
+
+        <p className="mt-7 mb-2">
+          <strong>Data de lançamento: </strong>
+          {data.release}
+        </p>
+
+        <h2 className="font-bold text-lg mt-7 mb-2">Jogo Recomendado:</h2>
+        <div className="flex">
+          <div className="flex-grow">
+            <GameCard data={sortedGame} />
+          </div>
+        </div>
       </Container>
     </main>
   )
