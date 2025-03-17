@@ -20,7 +20,6 @@ export function Header() {
           </Link>
 
           <Link href="/">Games</Link>
-          <Link href="/profile">Perfil</Link>
         </nav>
 
         <div className="hidden sm:flex justify-center items-center">
