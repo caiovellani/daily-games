@@ -2,8 +2,61 @@ import { Container } from '@/app/components/container'
 import { GameCard } from '@/app/components/gamecard'
 import { Label } from '@/app/game/[id]/components/label'
 import type { GameProps } from '@/utils/types/game'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
+
+interface PropsParams {
+  params: {
+    id: string
+  }
+}
+
+export async function generateMetadata({
+  params,
+}: PropsParams): Promise<Metadata> {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_API_URL}/next-api/?api=game&id=${params.id}`,
+      { cache: 'no-store' }
+    )
+      .then((res) => res.json() as Promise<GameProps>)
+      .catch(
+        () =>
+          ({
+            title: 'DalyGames - Descubra jogos incríveis para se divertir',
+            description: '',
+            image_url: '',
+          } as GameProps)
+      )
+
+    return {
+      title: response.title,
+      description: response.description
+        ? `${response.description.slice(0, 100)}...`
+        : 'Descrição não disponível.',
+      openGraph: {
+        title: response.title,
+        images: response.image_url ? [response.image_url] : [],
+      },
+      robots: {
+        index: true,
+        follow: true,
+        nocache: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          noimageindex: true,
+        },
+      },
+    }
+  } catch (err) {
+    console.error(err)
+    return {
+      title: 'DalyGames - Descubra jogos incríveis para se divertir.',
+    }
+  }
+}
 
 async function getData(id: string) {
   try {
